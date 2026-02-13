@@ -663,6 +663,28 @@ header{
   background-size:cover;
   background-position:center;
   background-color:#0b1220;
+  position:relative;
+}
+/* New style for the save button inside the modal image */
+#modalSaveBtn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 10;
+  background: rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.12);
+  color: #e9f2ff;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  cursor:pointer;
+  backdrop-filter: blur(8px);
+}
+
+#modalSaveBtn:hover {
+  background: rgba(0,0,0,.45);
 }
 .modal-body{
   padding:16px;
