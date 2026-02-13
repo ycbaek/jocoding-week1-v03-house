@@ -727,8 +727,15 @@ header{
   background: rgba(255,255,255,.06);
   border:1px solid rgba(255,255,255,.10);
   color:var(--text);
-  padding:8px 10px;
-  border-radius:12px;
+  padding:10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
 }
 
 /* Pagination */
