@@ -1450,6 +1450,8 @@ const listings = [
 let statusFilter = "all";
 let saved = new Set(JSON.parse(localStorage.getItem("savedHomes") || "[]"));
 let activeListingId = null;
+let currentPage = 1;
+const ITEMS_PER_PAGE = 6;
 
 // --- Elements ---
 const el = (id) => document.getElementById(id);
@@ -1592,9 +1594,14 @@ function getFiltered(){
 // --- Rendering ---
 function render(){
   const items = getFiltered();
+  const totalPages = Math.max(1, Math.ceil(items.length / ITEMS_PER_PAGE));
+  if (currentPage > totalPages) currentPage = totalPages;
+
+  const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+  const pageItems = items.slice(startIdx, startIdx + ITEMS_PER_PAGE);
 
   const q = qEl.value.trim();
-  resultsMetaEl.textContent = `Showing ${items.length} result${items.length===1?"":"s"}${q ? ` for "${q}"` : ""}`;
+  resultsMetaEl.textContent = `Showing ${startIdx + 1}–${Math.min(startIdx + ITEMS_PER_PAGE, items.length)} of ${items.length} result${items.length===1?"":"s"}${q ? ` for "${q}"` : ""}`;
 
   const salePrices = items.filter(x=>x.status==="for_sale").map(x=>x.price);
   if (salePrices.length){
@@ -1607,7 +1614,7 @@ function render(){
   }
 
   cardsEl.innerHTML = "";
-  for (const x of items){
+  for (const x of pageItems){
     const card = document.createElement("div");
     card.className = "card";
     card.setAttribute("data-id", x.id);
@@ -1647,7 +1654,71 @@ function render(){
     cardsEl.appendChild(card);
   }
 
+  // Pagination controls
+  renderPagination(totalPages);
+
   persistSaved();
+}
+
+function renderPagination(totalPages){
+  const paginationEl = el("pagination");
+  paginationEl.innerHTML = "";
+  if (totalPages <= 1) return;
+
+  const prevBtn = document.createElement("button");
+  prevBtn.className = "page-btn";
+  prevBtn.textContent = "Prev";
+  prevBtn.disabled = currentPage === 1;
+  prevBtn.addEventListener("click", ()=>{ currentPage--; render(); scrollToCards(); });
+  paginationEl.appendChild(prevBtn);
+
+  const maxVisible = 5;
+  let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+  let end = Math.min(totalPages, start + maxVisible - 1);
+  if (end - start + 1 < maxVisible) start = Math.max(1, end - maxVisible + 1);
+
+  if (start > 1){
+    paginationEl.appendChild(createPageBtn(1));
+    if (start > 2){
+      const dots = document.createElement("span");
+      dots.className = "page-dots";
+      dots.textContent = "...";
+      paginationEl.appendChild(dots);
+    }
+  }
+
+  for (let i = start; i <= end; i++){
+    paginationEl.appendChild(createPageBtn(i));
+  }
+
+  if (end < totalPages){
+    if (end < totalPages - 1){
+      const dots = document.createElement("span");
+      dots.className = "page-dots";
+      dots.textContent = "...";
+      paginationEl.appendChild(dots);
+    }
+    paginationEl.appendChild(createPageBtn(totalPages));
+  }
+
+  const nextBtn = document.createElement("button");
+  nextBtn.className = "page-btn";
+  nextBtn.textContent = "Next";
+  nextBtn.disabled = currentPage === totalPages;
+  nextBtn.addEventListener("click", ()=>{ currentPage++; render(); scrollToCards(); });
+  paginationEl.appendChild(nextBtn);
+}
+
+function createPageBtn(page){
+  const btn = document.createElement("button");
+  btn.className = "page-btn" + (page === currentPage ? " active" : "");
+  btn.textContent = page;
+  btn.addEventListener("click", ()=>{ currentPage = page; render(); scrollToCards(); });
+  return btn;
+}
+
+function scrollToCards(){
+  document.querySelector(".list-head").scrollIntoView({behavior:"smooth"});
 }
 
 function toggleSave(id){
@@ -1700,13 +1771,14 @@ document.querySelectorAll(".seg button").forEach(btn=>{
     document.querySelectorAll(".seg button").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
     statusFilter = btn.dataset.status;
+    currentPage = 1;
     render();
   });
 });
 
 [qEl, minPriceEl, maxPriceEl, bedsEl, bathsEl, typeEl, openHouseEl, hideSoldEl, favoritesOnlyEl, sortEl].forEach(node=>{
-  node.addEventListener("input", render);
-  node.addEventListener("change", render);
+  node.addEventListener("input", ()=>{ currentPage = 1; render(); });
+  node.addEventListener("change", ()=>{ currentPage = 1; render(); });
 });
 
 resetBtn.addEventListener("click", ()=>{
@@ -1725,6 +1797,7 @@ resetBtn.addEventListener("click", ()=>{
   document.querySelectorAll(".seg button").forEach(b=>b.classList.remove("active"));
   document.querySelector('.seg button[data-status="all"]').classList.add("active");
 
+  currentPage = 1;
   render();
 });
 
