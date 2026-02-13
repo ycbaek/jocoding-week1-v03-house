@@ -185,11 +185,9 @@ header{
 }
 .img{
   height:140px;
-  background:
-    linear-gradient(135deg, rgba(45,212,191,.25), rgba(96,165,250,.20)),
-    radial-gradient(800px 300px at 20% 10%, rgba(255,255,255,.10), transparent 55%),
-    radial-gradient(700px 260px at 80% 30%, rgba(255,255,255,.08), transparent 55%),
-    #0b1220;
+  background-size:cover;
+  background-position:center;
+  background-color:#0b1220;
   position:relative;
 }
 .tag{
@@ -356,11 +354,9 @@ header{
 }
 .modal-img{
   height:260px;
-  background:
-    linear-gradient(135deg, rgba(45,212,191,.25), rgba(96,165,250,.20)),
-    radial-gradient(700px 250px at 20% 10%, rgba(255,255,255,.12), transparent 55%),
-    radial-gradient(700px 260px at 80% 30%, rgba(255,255,255,.08), transparent 55%),
-    #0b1220;
+  background-size:cover;
+  background-position:center;
+  background-color:#0b1220;
 }
 .modal-body{
   padding:16px;
@@ -370,6 +366,49 @@ header{
   .modal-body{border-left:none;border-top:1px solid rgba(255,255,255,.08);}
 }
 .modal-body p{color:var(--muted); margin:10px 0 0 0; line-height:1.4}
+
+/* TM Prediction */
+.tm-prediction{
+  margin-top:10px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.pred-loading{
+  color:var(--muted);
+  font-size:13px;
+}
+.pred-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:13px;
+}
+.pred-label{
+  width:90px;
+  color:#d9e5ff;
+  font-weight:600;
+  text-transform:capitalize;
+}
+.pred-bar-bg{
+  flex:1;
+  height:8px;
+  border-radius:4px;
+  background:rgba(255,255,255,.08);
+  overflow:hidden;
+}
+.pred-bar{
+  height:100%;
+  border-radius:4px;
+  background:linear-gradient(90deg, var(--brand), var(--brand2));
+  transition:width .3s ease;
+}
+.pred-pct{
+  width:48px;
+  text-align:right;
+  color:var(--muted);
+  font-weight:600;
+}
 .row{
   display:grid;
   grid-template-columns: 1fr 1fr;

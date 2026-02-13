@@ -220,6 +220,10 @@
         <div class="modal-body">
           <div style="font-weight:900;">Quick stats</div>
           <div class="row" id="modalStats"></div>
+          <div style="font-weight:900; margin-top:16px;">AI Property Classification</div>
+          <div id="tmPrediction" class="tm-prediction">
+            <span class="pred-loading">Loading model...</span>
+          </div>
           <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
             <button class="btn primary" id="scheduleBtn">Schedule a tour</button>
             <button class="btn" id="messageBtn">Message agent</button>
@@ -232,6 +236,8 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

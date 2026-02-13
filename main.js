@@ -1,3 +1,52 @@
+// --- Property images ---
+const propertyImages = {
+  house: [
+    "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop",
+  ],
+  condo: [
+    "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1460317442991-0ec209397118?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1567496898669-ee935f5f647a?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&h=400&fit=crop",
+  ],
+  townhome: [
+    "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=600&h=400&fit=crop",
+  ],
+};
+
+function getImageUrl(listing) {
+  const pool = propertyImages[listing.type] || propertyImages.house;
+  const idx = parseInt(listing.id.replace(/\D/g, ""), 10) % pool.length;
+  return pool[idx];
+}
+
+// --- Teachable Machine model ---
+const TM_MODEL_URL = "https://teachablemachine.withgoogle.com/models/FBWLjBev7/";
+let tmModel = null;
+
+async function loadTMModel() {
+  try {
+    const modelURL = TM_MODEL_URL + "model.json";
+    const metadataURL = TM_MODEL_URL + "metadata.json";
+    tmModel = await tmImage.load(modelURL, metadataURL);
+  } catch (e) {
+    console.warn("Teachable Machine model failed to load:", e);
+  }
+}
+
+async function classifyImage(imgElement) {
+  if (!tmModel) return null;
+  const predictions = await tmModel.predict(imgElement);
+  predictions.sort((a, b) => b.probability - a.probability);
+  return predictions;
+}
+
 // --- Demo data ---
 const listings = [
   {
@@ -1622,7 +1671,7 @@ function render(){
     const isSaved = saved.has(x.id);
 
     card.innerHTML = `
-      <div class="img">
+      <div class="img" style="background-image:url('${getImageUrl(x)}')">
         <div class="tag">
           <span class="dot ${statusDotClass(x.status)}"></span>
           ${statusLabel(x.status)}${x.openHouse ? " • Open house" : ""}
@@ -1733,9 +1782,15 @@ function openModal(id){
   const x = listings.find(z=>z.id===id);
   if (!x) return;
 
+  const imgUrl = getImageUrl(x);
+
   modalTitleEl.textContent = `${statusLabel(x.status)} • ${x.type.toUpperCase()} • ${x.id}`;
   modalPriceEl.textContent = fmtMoney(x.price, x.status);
   modalAddrEl.textContent = x.address;
+
+  // Show property image in modal
+  const modalImgEl = el("modalImg");
+  modalImgEl.style.backgroundImage = `url('${imgUrl}')`;
 
   modalFactsEl.innerHTML = `
     <span class="fact">${x.beds} bd</span>
@@ -1753,6 +1808,32 @@ function openModal(id){
     <div class="badge"><span>City</span><strong>${x.city}</strong></div>
     <div class="badge"><span>Type</span><strong>${x.type}</strong></div>
   `;
+
+  // TM model prediction
+  const predictionEl = el("tmPrediction");
+  predictionEl.innerHTML = '<span class="pred-loading">Analyzing image...</span>';
+
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.src = imgUrl;
+  img.onload = async () => {
+    const predictions = await classifyImage(img);
+    if (predictions) {
+      predictionEl.innerHTML = predictions.map(p => {
+        const pct = (p.probability * 100).toFixed(1);
+        return `<div class="pred-row">
+          <span class="pred-label">${p.className}</span>
+          <div class="pred-bar-bg"><div class="pred-bar" style="width:${pct}%"></div></div>
+          <span class="pred-pct">${pct}%</span>
+        </div>`;
+      }).join("");
+    } else {
+      predictionEl.innerHTML = '<span class="pred-loading">Model not loaded</span>';
+    }
+  };
+  img.onerror = () => {
+    predictionEl.innerHTML = '<span class="pred-loading">Could not load image</span>';
+  };
 
   modalSaveBtn.textContent = saved.has(id) ? "♥ Saved" : "♡ Save";
   backdropEl.classList.add("show");
@@ -1835,3 +1916,6 @@ messageBtn.addEventListener("click", ()=>{
 // Initial render
 persistSaved();
 render();
+
+// Load Teachable Machine model
+loadTMModel();
