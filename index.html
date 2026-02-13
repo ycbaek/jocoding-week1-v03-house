@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HomeFind — Real Estate Demo</title>
+  <title>HomeFind — Find Your Perfect Home in Seattle &amp; Beyond</title>
+  <meta name="description" content="HomeFind helps you search homes for sale and rent across Seattle, Redmond, Bellevue, Kirkland, and Somerville. Browse listings, compare prices, and connect with realtors.">
+  <meta name="keywords" content="homes for sale, houses for rent, Seattle real estate, Redmond homes, Bellevue condos, Kirkland townhomes, Somerville real estate, home buying, property search">
+  <meta property="og:title" content="HomeFind — Find Your Perfect Home">
+  <meta property="og:description" content="Search homes for sale and rent across Seattle, Redmond, Bellevue, and more. Browse listings, compare prices, and connect with realtors.">
+  <meta property="og:type" content="website">
   <meta name="google-adsense-account" content="ca-pub-6454293227427570">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6454293227427570"
      crossorigin="anonymous"></script>
@@ -15,17 +20,34 @@
       <div class="logo">
         <div class="logo-badge">H</div>
         <div>
-          <div style="line-height:1.05;">HomeFind</div>
-          <div style="font-size:12px;color:var(--muted);font-weight:600;">Real estate demo (front-end)</div>
+          <a href="index.html" style="text-decoration:none;color:inherit;">
+            <div style="line-height:1.05;">HomeFind</div>
+            <div style="font-size:12px;color:var(--muted);font-weight:600;">Your home search starts here</div>
+          </a>
         </div>
       </div>
 
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="guide.html" class="nav-link">Buying Guide</a>
+        <a href="market.html" class="nav-link">Market Trends</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+
       <div class="nav">
         <div class="pill">Saved: <strong id="savedCount">0</strong></div>
-        <div class="pill">Market: <strong>US</strong></div>
       </div>
     </div>
   </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Find Your Perfect Home</h1>
+      <p>Search hundreds of homes for sale and rent across Seattle, the Greater Eastside, and Somerville. Get AI-powered property insights, save your favorites, and connect with local realtors — all in one place.</p>
+    </div>
+  </section>
 
   <main class="grid">
     <!-- LEFT: Search + Listings -->
@@ -34,7 +56,7 @@
       <div class="filters">
         <label class="field">
           Location / keyword
-          <input id="q" placeholder="e.g., Redmond, WA • Seattle • 98052 • 'lake'"/>
+          <input id="q" placeholder="e.g., Seattle, WA • Redmond • Capitol Hill"/>
         </label>
 
         <label class="field">
@@ -131,8 +153,8 @@
 
           <select class="btn" id="sort">
             <option value="relevance">Sort: Relevance</option>
-            <option value="price_asc">Price: Low → High</option>
-            <option value="price_desc">Price: High → Low</option>
+            <option value="price_asc">Price: Low to High</option>
+            <option value="price_desc">Price: High to Low</option>
             <option value="newest">Newest</option>
           </select>
         </div>
@@ -140,9 +162,6 @@
 
       <div class="cards" id="cards"></div>
       <div class="pagination" id="pagination"></div>
-      <div class="footer-note">
-        Demo only (no real data). Next step would be connecting this to a backend + real listings API + map provider.
-      </div>
     </section>
 
     <!-- RIGHT: Map -->
@@ -150,7 +169,7 @@
       <div class="list-head">
         <div>
           <div style="font-weight:900">Map</div>
-          <div class="meta">Placeholder (add Google Maps / Mapbox later)</div>
+          <div class="meta">Interactive map coming soon</div>
         </div>
         <button class="btn ghost" id="centerBtn">Center</button>
       </div>
@@ -161,7 +180,7 @@
         <div class="pin"></div>
         <div class="hint">
           <div style="font-weight:900;color:#d9e5ff;margin-bottom:6px;">Map preview</div>
-          <div>When you click a listing, it opens details. You can later integrate a real map and drop pins for the filtered results.</div>
+          <div>Click a listing to view details. Full interactive map integration is on the way.</div>
         </div>
       </div>
 
@@ -171,34 +190,118 @@
           <span class="badge" id="medianPrice">Median: —</span>
         </div>
         <div class="kpi">
-          <span class="badge">Tip: Try searching "Redmond"</span>
+          <span class="badge">Tip: Try searching "Seattle" or "Redmond"</span>
         </div>
       </div>
     </aside>
   </main>
 
-  <!-- Contact Realtor -->
-  <section class="contact-section">
-    <div class="contact-container">
-      <h2>Message a Realtor</h2>
-      <p class="contact-sub">Have a question or want to schedule a viewing? Drop us a line.</p>
-      <form
-        action="https://formspree.io/f/mykdedwp"
-        method="POST"
-        class="contact-form"
-      >
-        <label class="field">
-          Your email
-          <input type="email" name="email" placeholder="you@example.com" required />
-        </label>
-        <label class="field">
-          Your message
-          <textarea name="message" rows="4" placeholder="I'm interested in a listing..." required></textarea>
-        </label>
-        <button type="submit" class="btn primary">Send Message</button>
-      </form>
+  <!-- Why HomeFind -->
+  <section class="content-section">
+    <div class="content-container">
+      <h2>Why Choose HomeFind?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h3>Smart Search</h3>
+          <p>Filter by location, price, bedrooms, property type, and more. Our search tools help you narrow down hundreds of listings to find exactly what you need.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <h3>AI-Powered Insights</h3>
+          <p>Our integrated machine learning model analyzes property images to help classify property types, giving you an extra layer of information when browsing.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Market Data</h3>
+          <p>See real-time average and median prices for your search results. Explore our <a href="market.html">Market Trends</a> page for in-depth neighborhood analysis.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>Connect with Realtors</h3>
+          <p>Reach out directly to experienced local realtors through our <a href="contact.html">contact form</a>. Schedule tours, ask questions, and get expert guidance.</p>
+        </div>
+      </div>
     </div>
   </section>
+
+  <!-- Neighborhood Highlights -->
+  <section class="content-section alt-bg">
+    <div class="content-container">
+      <h2>Neighborhoods We Serve</h2>
+      <p class="section-sub">From the urban energy of Seattle to the family-friendly suburbs of the Eastside, we cover the areas you care about most.</p>
+      <div class="neighborhood-grid">
+        <div class="neighborhood-card">
+          <h3>Seattle</h3>
+          <p>Capitol Hill, Ballard, Fremont, Queen Anne, Columbia City, and more. Seattle offers diverse neighborhoods with unique character, from waterfront living to hilltop views.</p>
+        </div>
+        <div class="neighborhood-card">
+          <h3>Redmond</h3>
+          <p>Home to major tech employers and top-rated schools. Redmond combines suburban comfort with easy access to trails, parks, and downtown Bellevue.</p>
+        </div>
+        <div class="neighborhood-card">
+          <h3>Bellevue</h3>
+          <p>A thriving city center with luxury condos, modern townhomes, and established neighborhoods. Bellevue is one of the most sought-after markets on the Eastside.</p>
+        </div>
+        <div class="neighborhood-card">
+          <h3>Kirkland</h3>
+          <p>Known for its charming waterfront, boutique shops, and strong community feel. Kirkland blends small-town warmth with big-city convenience.</p>
+        </div>
+        <div class="neighborhood-card">
+          <h3>Somerville, MA</h3>
+          <p>A vibrant city near Boston with excellent transit access, a growing food scene, and a mix of historic and modern housing options in neighborhoods like Davis Square and Union Square.</p>
+        </div>
+      </div>
+      <p style="margin-top:18px;text-align:center;"><a href="market.html" class="btn primary">Explore Market Trends</a></p>
+    </div>
+  </section>
+
+  <!-- Contact CTA -->
+  <section class="content-section">
+    <div class="content-container" style="text-align:center;">
+      <h2>Ready to Find Your Next Home?</h2>
+      <p class="section-sub">Whether you are buying your first home or searching for an investment property, our team is here to help every step of the way.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px;">
+        <a href="guide.html" class="btn ghost">Read Our Buying Guide</a>
+        <a href="contact.html" class="btn primary">Contact a Realtor</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="logo" style="margin-bottom:10px;">
+          <div class="logo-badge">H</div>
+          <div>
+            <div style="font-weight:800;">HomeFind</div>
+          </div>
+        </div>
+        <p>Your trusted partner in finding the perfect home. We help buyers, renters, and sellers navigate the real estate market with confidence.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <a href="index.html">Home</a>
+        <a href="guide.html">Buying Guide</a>
+        <a href="market.html">Market Trends</a>
+        <a href="about.html">About Us</a>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <a href="contact.html">Contact Us</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+      </div>
+      <div class="footer-col">
+        <h4>Service Areas</h4>
+        <p>Seattle, WA &bull; Redmond, WA &bull; Bellevue, WA &bull; Kirkland, WA &bull; Somerville, MA</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2025 HomeFind. All rights reserved.
+    </div>
+  </footer>
 
   <!-- Modal -->
   <div class="backdrop" id="backdrop" aria-hidden="true">
@@ -231,9 +334,6 @@
             <button class="btn primary" id="scheduleBtn">Schedule a tour</button>
             <button class="btn" id="messageBtn">Message agent</button>
           </div>
-          <p style="margin-top:12px;">
-            These buttons are demo actions (alerts). In a real app, connect them to forms, user auth, and a backend.
-          </p>
         </div>
       </div>
     </div>

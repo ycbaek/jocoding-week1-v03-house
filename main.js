@@ -3208,10 +3208,10 @@ modalSaveBtn.addEventListener("click", ()=>{
 });
 
 scheduleBtn.addEventListener("click", ()=>{
-  alert("Demo: This would open a scheduling flow (calendar + contact info).");
+  window.location.href = `contact.html?subject=tour&id=${activeListingId}`;
 });
 messageBtn.addEventListener("click", ()=>{
-  alert("Demo: This would open a message form to the agent.");
+  window.location.href = `contact.html?subject=listing&id=${activeListingId}`;
 });
 
 // Initial render
