@@ -2,13 +2,990 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HomeFind — Real Estate Demo</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#0f1a2e;
+      --muted:#96a3b8;
+      --text:#eaf0ff;
+      --line:#1f2b44;
+      --brand:#2dd4bf;
+      --brand2:#60a5fa;
+      --danger:#fb7185;
+      --good:#34d399;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(96,165,250,.25), transparent 60%),
+                  radial-gradient(900px 500px at 80% 10%, rgba(45,212,191,.18), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1180px;margin:0 auto;padding:18px}
+    header{
+      position: sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px);
+      background: rgba(11,18,32,.72);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .topbar{
+      display:flex; align-items:center; gap:14px;
+      padding:14px 18px;
+    }
+    .logo{
+      display:flex;align-items:center;gap:10px; font-weight:800; letter-spacing:.2px;
+    }
+    .logo-badge{
+      width:34px;height:34px;border-radius:10px;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      box-shadow: 0 10px 22px rgba(96,165,250,.18);
+      display:grid;place-items:center;
+      color:#08111f;font-weight:900;
+    }
+    .nav{
+      margin-left:auto;
+      display:flex; gap:10px; align-items:center;
+      color:var(--muted);
+      font-size:14px;
+    }
+    .pill{
+      padding:8px 12px;border:1px solid rgba(255,255,255,.10);
+      border-radius:999px; background: rgba(15,26,46,.65);
+      display:flex;align-items:center;gap:8px;
+    }
+    .pill strong{color:var(--text);font-weight:700}
+    .btn{
+      cursor:pointer;
+      border:none;
+      padding:10px 12px;
+      border-radius:12px;
+      color:var(--text);
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .btn:hover{background: rgba(255,255,255,.09)}
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(45,212,191,.95), rgba(96,165,250,.9));
+      color:#07111f;
+      border:none;
+      font-weight:800;
+    }
+    .btn.ghost{
+      background: transparent;
+      border:1px solid rgba(255,255,255,.12);
+      color: var(--text);
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.3fr .9fr;
+      gap:16px;
+      padding:18px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns: 1fr; }
+      .nav{display:none;}
+    }
+
+    /* Search / Filters */
+    .panel{
+      background: rgba(15,26,46,.72);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .panel h2{
+      margin:0; padding:16px 16px 0 16px;
+      font-size:16px;
+      color:#d9e5ff;
+    }
+    .filters{
+      padding:14px 16px 16px 16px;
+      display:grid;
+      grid-template-columns: 1.4fr .7fr .7fr;
+      gap:10px;
+    }
+    @media (max-width: 700px){
+      .filters{grid-template-columns: 1fr; }
+    }
+    .field{
+      display:flex; flex-direction:column; gap:6px;
+      font-size:12px; color:var(--muted);
+    }
+    .field input, .field select{
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(8,16,31,.65);
+      color:var(--text);
+      outline:none;
+    }
+    .field input::placeholder{color: rgba(150,163,184,.8);}
+    .filter-row{
+      display:flex; gap:10px; align-items:end;
+      grid-column: 1 / -1;
+      flex-wrap:wrap;
+      margin-top:6px;
+    }
+    .mini{
+      font-size:12px; color:var(--muted);
+      display:flex; gap:8px; align-items:center;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(8,16,31,.35);
+    }
+    .mini input{accent-color: var(--brand);}
+
+    /* Listings */
+    .list-head{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 16px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      gap:10px;
+    }
+    .list-head .meta{color:var(--muted); font-size:13px;}
+    .list-head .right{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+    .seg{
+      display:flex; gap:6px; border:1px solid rgba(255,255,255,.10);
+      background: rgba(8,16,31,.35);
+      padding:6px; border-radius:999px;
+    }
+    .seg button{
+      border:none; cursor:pointer;
+      padding:8px 10px; border-radius:999px;
+      background: transparent;
+      color: var(--muted);
+      font-size:12px;
+    }
+    .seg button.active{
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+    }
+    .cards{
+      padding:14px 16px 16px 16px;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:12px;
+    }
+    @media (max-width: 700px){
+      .cards{grid-template-columns: 1fr;}
+    }
+    .card{
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(8,16,31,.55);
+      border-radius: 16px;
+      overflow:hidden;
+      cursor:pointer;
+      transition: transform .12s ease, border-color .12s ease;
+      position:relative;
+    }
+    .card:hover{
+      transform: translateY(-2px);
+      border-color: rgba(96,165,250,.35);
+    }
+    .img{
+      height:140px;
+      background:
+        linear-gradient(135deg, rgba(45,212,191,.25), rgba(96,165,250,.20)),
+        radial-gradient(800px 300px at 20% 10%, rgba(255,255,255,.10), transparent 55%),
+        radial-gradient(700px 260px at 80% 30%, rgba(255,255,255,.08), transparent 55%),
+        #0b1220;
+      position:relative;
+    }
+    .tag{
+      position:absolute;left:10px;top:10px;
+      background: rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.12);
+      padding:6px 10px;border-radius:999px;
+      font-size:12px;color:#e9f2ff;
+      display:flex; gap:8px; align-items:center;
+      backdrop-filter: blur(8px);
+    }
+    .dot{width:8px;height:8px;border-radius:999px;background:var(--good);display:inline-block}
+    .dot.sale{background: var(--brand2)}
+    .dot.rent{background: var(--brand)}
+    .dot.sold{background: var(--danger)}
+    .save{
+      position:absolute;right:10px;top:10px;
+      width:38px;height:38px;border-radius:12px;
+      background: rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.12);
+      color: #e9f2ff;
+      display:grid; place-items:center;
+      cursor:pointer;
+      backdrop-filter: blur(8px);
+    }
+    .save:hover{background: rgba(0,0,0,.45)}
+    .card-body{padding:12px 12px 12px 12px}
+    .price{font-weight:900; font-size:18px}
+    .addr{color:var(--muted);font-size:13px;margin-top:4px}
+    .facts{
+      display:flex;gap:10px;flex-wrap:wrap;
+      margin-top:10px;color:#d9e5ff;
+      font-size:12px;
+    }
+    .fact{
+      padding:6px 8px;border-radius:10px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      color: #d9e5ff;
+    }
+
+    /* Map placeholder */
+    .map{
+      display:flex; flex-direction:column;
+      min-height: 580px;
+    }
+    .map-box{
+      flex:1;
+      margin:16px;
+      border-radius: var(--radius);
+      border:1px dashed rgba(255,255,255,.18);
+      background:
+        radial-gradient(1200px 600px at 40% 20%, rgba(96,165,250,.18), transparent 55%),
+        radial-gradient(900px 500px at 70% 60%, rgba(45,212,191,.14), transparent 60%),
+        rgba(8,16,31,.35);
+      display:grid; place-items:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .map-box .hint{
+      text-align:center;
+      padding:22px;
+      color: var(--muted);
+      max-width: 340px;
+      line-height:1.35;
+    }
+    .map-box .pin{
+      position:absolute;
+      width:14px;height:14px;border-radius:999px;
+      background: rgba(45,212,191,.9);
+      box-shadow: 0 0 0 8px rgba(45,212,191,.18), 0 12px 30px rgba(0,0,0,.35);
+    }
+    .map-box .pin:nth-child(2){left:18%;top:28%;}
+    .map-box .pin:nth-child(3){left:62%;top:34%;background: rgba(96,165,250,.9); box-shadow: 0 0 0 8px rgba(96,165,250,.18), 0 12px 30px rgba(0,0,0,.35);}
+    .map-box .pin:nth-child(4){left:46%;top:62%;background: rgba(251,113,133,.9); box-shadow: 0 0 0 8px rgba(251,113,133,.16), 0 12px 30px rgba(0,0,0,.35);}
+
+    .map-footer{
+      padding:12px 16px 16px 16px;
+      border-top:1px solid rgba(255,255,255,.08);
+      display:flex; justify-content:space-between; align-items:center;
+      gap:10px; flex-wrap:wrap;
+    }
+    .kpi{display:flex; gap:10px; align-items:center; color:var(--muted); font-size:13px;}
+    .badge{
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(8,16,31,.35);
+      color:#d9e5ff;
+      font-size:12px;
+    }
+
+    /* Modal */
+    .backdrop{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:center; justify-content:center;
+      padding:18px;
+      z-index: 50;
+    }
+    .backdrop.show{display:flex}
+    .modal{
+      width:min(920px, 100%);
+      border-radius: 18px;
+      background: rgba(15,26,46,.95);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .modal-top{
+      display:flex; justify-content:space-between; align-items:center;
+      padding:14px 16px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .modal-top .title{font-weight:900}
+    .modal-grid{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:0;
+    }
+    @media (max-width: 860px){
+      .modal-grid{grid-template-columns: 1fr;}
+    }
+    .modal-img{
+      height:260px;
+      background:
+        linear-gradient(135deg, rgba(45,212,191,.25), rgba(96,165,250,.20)),
+        radial-gradient(700px 250px at 20% 10%, rgba(255,255,255,.12), transparent 55%),
+        radial-gradient(700px 260px at 80% 30%, rgba(255,255,255,.08), transparent 55%),
+        #0b1220;
+    }
+    .modal-body{
+      padding:16px;
+      border-left:1px solid rgba(255,255,255,.08);
+    }
+    @media (max-width: 860px){
+      .modal-body{border-left:none;border-top:1px solid rgba(255,255,255,.08);}
+    }
+    .modal-body p{color:var(--muted); margin:10px 0 0 0; line-height:1.4}
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    .row .badge{display:flex;justify-content:space-between;gap:10px}
+    .close{
+      border:none; cursor:pointer;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      color:var(--text);
+      padding:8px 10px;
+      border-radius:12px;
+    }
+    .footer-note{
+      color: rgba(150,163,184,.85);
+      font-size:12px;
+      padding: 0 18px 18px 18px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+  <header>
+    <div class="topbar">
+      <div class="logo">
+        <div class="logo-badge">H</div>
+        <div>
+          <div style="line-height:1.05;">HomeFind</div>
+          <div style="font-size:12px;color:var(--muted);font-weight:600;">Real estate demo (front-end)</div>
+        </div>
+      </div>
+
+      <div class="nav">
+        <div class="pill">Saved: <strong id="savedCount">0</strong></div>
+        <div class="pill">Market: <strong>US</strong></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="grid">
+    <!-- LEFT: Search + Listings -->
+    <section class="panel">
+      <h2>Search homes</h2>
+      <div class="filters">
+        <label class="field">
+          Location / keyword
+          <input id="q" placeholder="e.g., Redmond, WA • Seattle • 98052 • 'lake'"/>
+        </label>
+
+        <label class="field">
+          Min price
+          <select id="minPrice">
+            <option value="0">No min</option>
+            <option value="300000">$300k</option>
+            <option value="500000">$500k</option>
+            <option value="800000">$800k</option>
+            <option value="1000000">$1.0M</option>
+            <option value="1500000">$1.5M</option>
+          </select>
+        </label>
+
+        <label class="field">
+          Max price
+          <select id="maxPrice">
+            <option value="999999999">No max</option>
+            <option value="500000">$500k</option>
+            <option value="800000">$800k</option>
+            <option value="1000000">$1.0M</option>
+            <option value="1500000">$1.5M</option>
+            <option value="2000000">$2.0M</option>
+            <option value="3000000">$3.0M</option>
+          </select>
+        </label>
+
+        <label class="field">
+          Beds
+          <select id="beds">
+            <option value="0">Any</option>
+            <option value="1">1+</option>
+            <option value="2">2+</option>
+            <option value="3">3+</option>
+            <option value="4">4+</option>
+            <option value="5">5+</option>
+          </select>
+        </label>
+
+        <label class="field">
+          Baths
+          <select id="baths">
+            <option value="0">Any</option>
+            <option value="1">1+</option>
+            <option value="2">2+</option>
+            <option value="3">3+</option>
+          </select>
+        </label>
+
+        <label class="field">
+          Home type
+          <select id="type">
+            <option value="any">Any</option>
+            <option value="house">House</option>
+            <option value="condo">Condo</option>
+            <option value="townhome">Townhome</option>
+          </select>
+        </label>
+
+        <div class="filter-row">
+          <div class="mini">
+            <input type="checkbox" id="openHouse" />
+            <label for="openHouse">Open house only</label>
+          </div>
+          <div class="mini">
+            <input type="checkbox" id="hideSold" checked />
+            <label for="hideSold">Hide sold</label>
+          </div>
+          <div class="mini">
+            <input type="checkbox" id="favoritesOnly" />
+            <label for="favoritesOnly">Favorites only</label>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding: 0 16px 16px 16px; display: flex; gap: 10px;">
+        <button class="btn" id="resetBtn">Reset</button>
+        <button class="btn primary" id="newSearchBtn" style="flex: 1;">Search</button>
+      </div>
+
+      <div class="list-head">
+        <div>
+          <div style="font-weight:900">Listings</div>
+          <div class="meta" id="resultsMeta">Showing —</div>
+        </div>
+
+        <div class="right">
+          <div class="seg" role="tablist" aria-label="status filter">
+            <button class="active" data-status="all">All</button>
+            <button data-status="for_sale">For Sale</button>
+            <button data-status="for_rent">For Rent</button>
+            <button data-status="sold">Sold</button>
+          </div>
+
+          <select class="btn" id="sort">
+            <option value="relevance">Sort: Relevance</option>
+            <option value="price_asc">Price: Low → High</option>
+            <option value="price_desc">Price: High → Low</option>
+            <option value="newest">Newest</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="cards" id="cards"></div>
+      <div class="footer-note">
+        Demo only (no real data). Next step would be connecting this to a backend + real listings API + map provider.
+      </div>
+    </section>
+
+    <!-- RIGHT: Map -->
+    <aside class="panel map">
+      <div class="list-head">
+        <div>
+          <div style="font-weight:900">Map</div>
+          <div class="meta">Placeholder (add Google Maps / Mapbox later)</div>
+        </div>
+        <button class="btn ghost" id="centerBtn">Center</button>
+      </div>
+
+      <div class="map-box" id="mapBox">
+        <div class="pin"></div>
+        <div class="pin"></div>
+        <div class="pin"></div>
+        <div class="hint">
+          <div style="font-weight:900;color:#d9e5ff;margin-bottom:6px;">Map preview</div>
+          <div>When you click a listing, it opens details. You can later integrate a real map and drop pins for the filtered results.</div>
+        </div>
+      </div>
+
+      <div class="map-footer">
+        <div class="kpi">
+          <span class="badge" id="avgPrice">Avg: —</span>
+          <span class="badge" id="medianPrice">Median: —</span>
+        </div>
+        <div class="kpi">
+          <span class="badge">Tip: Try searching “Redmond”</span>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Modal -->
+  <div class="backdrop" id="backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Listing details">
+      <div class="modal-top">
+        <div class="title" id="modalTitle">Listing</div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="btn" id="modalSaveBtn">♡ Save</button>
+          <button class="close" id="closeModal">Close</button>
+        </div>
+      </div>
+      <div class="modal-grid">
+        <div>
+          <div class="modal-img" id="modalImg"></div>
+          <div style="padding:16px;">
+            <div class="price" id="modalPrice">$—</div>
+            <div class="addr" id="modalAddr">—</div>
+            <div class="facts" id="modalFacts"></div>
+            <p id="modalDesc"></p>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div style="font-weight:900;">Quick stats</div>
+          <div class="row" id="modalStats"></div>
+          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn primary" id="scheduleBtn">Schedule a tour</button>
+            <button class="btn" id="messageBtn">Message agent</button>
+          </div>
+          <p style="margin-top:12px;">
+            These buttons are demo actions (alerts). In a real app, connect them to forms, user auth, and a backend.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Demo data ---
+    const listings = [
+      {
+        id: "L-1001",
+        status: "for_sale",
+        type: "house",
+        price: 1425000,
+        beds: 4, baths: 3, sqft: 2780,
+        year: 2016,
+        address: "14600 NE 87th St, Redmond, WA 98052",
+        city: "Redmond",
+        daysOn: 6,
+        openHouse: true,
+        description: "Bright modern home near parks and schools. Open layout, updated kitchen, and a spacious backyard for entertaining.",
+      },
+      {
+        id: "L-1002",
+        status: "for_sale",
+        type: "townhome",
+        price: 945000,
+        beds: 3, baths: 2, sqft: 1680,
+        year: 2019,
+        address: "7312 164th Ave NE, Redmond, WA 98052",
+        city: "Redmond",
+        daysOn: 12,
+        openHouse: false,
+        description: "Low-maintenance townhome with attached garage. Great commute access and walkable amenities.",
+      },
+      {
+        id: "L-1003",
+        status: "for_rent",
+        type: "condo",
+        price: 3200,
+        beds: 2, baths: 2, sqft: 980,
+        year: 2012,
+        address: "2210 Westlake Ave N, Seattle, WA 98109",
+        city: "Seattle",
+        daysOn: 3,
+        openHouse: false,
+        description: "Waterfront-adjacent condo with skyline views. Building includes gym, lounge, and secure parking.",
+      },
+      {
+        id: "L-1004",
+        status: "sold",
+        type: "house",
+        price: 1280000,
+        beds: 4, baths: 2, sqft: 2400,
+        year: 2008,
+        address: "10512 NE 38th Pl, Kirkland, WA 98033",
+        city: "Kirkland",
+        daysOn: 0,
+        openHouse: false,
+        description: "Recently sold. Classic NW style with updated finishes and a quiet neighborhood feel.",
+      },
+      {
+        id: "L-1005",
+        status: "for_sale",
+        type: "condo",
+        price: 610000,
+        beds: 1, baths: 1, sqft: 740,
+        year: 2020,
+        address: "815 Pine St, Seattle, WA 98101",
+        city: "Seattle",
+        daysOn: 8,
+        openHouse: true,
+        description: "Downtown condo living with concierge and rooftop deck. Steps away from dining and transit.",
+      },
+      {
+        id: "L-1006",
+        status: "for_rent",
+        type: "house",
+        price: 4600,
+        beds: 3, baths: 2, sqft: 1900,
+        year: 1998,
+        address: "6220 34th Ave NE, Seattle, WA 98115",
+        city: "Seattle",
+        daysOn: 10,
+        openHouse: true,
+        description: "Charming rental home in a residential area. Fenced yard, updated appliances, and lots of natural light.",
+      },
+      {
+        id: "L-1007",
+        status: "for_sale",
+        type: "house",
+        price: 1760000,
+        beds: 5, baths: 4, sqft: 3320,
+        year: 2022,
+        address: "4021 154th Pl NE, Bellevue, WA 98007",
+        city: "Bellevue",
+        daysOn: 2,
+        openHouse: false,
+        description: "Newer construction with premium finishes. Flexible spaces for office, guests, and entertaining.",
+      },
+      {
+        id: "L-1008",
+        status: "sold",
+        type: "condo",
+        price: 540000,
+        beds: 1, baths: 1, sqft: 690,
+        year: 2014,
+        address: "1500 4th Ave, Seattle, WA 98101",
+        city: "Seattle",
+        daysOn: 0,
+        openHouse: false,
+        description: "Recently sold. Great starter condo with easy access to transit and city amenities.",
+      },
+    ];
+
+    // --- State ---
+    let statusFilter = "all";
+    let saved = new Set(JSON.parse(localStorage.getItem("savedHomes") || "[]"));
+    let activeListingId = null;
+
+    // --- Elements ---
+    const el = (id) => document.getElementById(id);
+    const cardsEl = el("cards");
+    const resultsMetaEl = el("resultsMeta");
+    const savedCountEl = el("savedCount");
+    const avgPriceEl = el("avgPrice");
+    const medianPriceEl = el("medianPrice");
+
+    // Inputs
+    const qEl = el("q");
+    const minPriceEl = el("minPrice");
+    const maxPriceEl = el("maxPrice");
+    const bedsEl = el("beds");
+    const bathsEl = el("baths");
+    const typeEl = el("type");
+    const openHouseEl = el("openHouse");
+    const hideSoldEl = el("hideSold");
+    const favoritesOnlyEl = el("favoritesOnly");
+    const sortEl = el("sort");
+
+    // Modal
+    const backdropEl = el("backdrop");
+    const modalTitleEl = el("modalTitle");
+    const modalPriceEl = el("modalPrice");
+    const modalAddrEl = el("modalAddr");
+    const modalFactsEl = el("modalFacts");
+    const modalDescEl = el("modalDesc");
+    const modalStatsEl = el("modalStats");
+    const modalSaveBtn = el("modalSaveBtn");
+
+    // Buttons
+    const resetBtn = el("resetBtn");
+    const newSearchBtn = el("newSearchBtn");
+    const centerBtn = el("centerBtn");
+    const closeModalBtn = el("closeModal");
+    const scheduleBtn = el("scheduleBtn");
+    const messageBtn = el("messageBtn");
+
+    // --- Helpers ---
+    const fmtMoney = (n, status) => {
+      // If rent, treat as monthly
+      if (status === "for_rent") return `$${n.toLocaleString()}/mo`;
+      if (n >= 1_000_000) return `$${(n/1_000_000).toFixed(2)}M`;
+      return `$${n.toLocaleString()}`;
+    };
+
+    const relevanceScore = (item, query) => {
+      if (!query) return 0;
+      const t = query.toLowerCase();
+      const s = (item.address + " " + item.city + " " + item.type + " " + item.status).toLowerCase();
+      let score = 0;
+      for (const token of t.split(/\s+/).filter(Boolean)){
+        if (s.includes(token)) score += 2;
+      }
+      if (s.includes(t)) score += 3;
+      return score;
+    };
+
+    const median = (arr) => {
+      const a = [...arr].sort((x,y)=>x-y);
+      const m = Math.floor(a.length/2);
+      return a.length ? (a.length % 2 ? a[m] : (a[m-1]+a[m])/2) : null;
+    };
+
+    function persistSaved(){
+      localStorage.setItem("savedHomes", JSON.stringify([...saved]));
+      savedCountEl.textContent = saved.size;
+    }
+
+    function statusLabel(status){
+      if (status === "for_sale") return "For Sale";
+      if (status === "for_rent") return "For Rent";
+      return "Sold";
+    }
+
+    function statusDotClass(status){
+      if (status === "for_sale") return "sale";
+      if (status === "for_rent") return "rent";
+      return "sold";
+    }
+
+    // --- Filtering & sorting ---
+    function getFiltered(){
+      const query = qEl.value.trim().toLowerCase();
+      const minP = Number(minPriceEl.value);
+      const maxP = Number(maxPriceEl.value);
+      const minBeds = Number(bedsEl.value);
+      const minBaths = Number(bathsEl.value);
+      const type = typeEl.value;
+      const openOnly = openHouseEl.checked;
+      const hideSold = hideSoldEl.checked;
+      const favOnly = favoritesOnlyEl.checked;
+
+      let items = listings.filter((x) => {
+        if (statusFilter !== "all" && x.status !== statusFilter) return false;
+        if (hideSold && x.status === "sold") return false;
+        if (favOnly && !saved.has(x.id)) return false;
+
+        // price filter logic: rent and sale both use "price" field
+        if (x.price < minP) return false;
+        if (x.price > maxP) return false;
+
+        if (x.beds < minBeds) return false;
+        if (x.baths < minBaths) return false;
+
+        if (type !== "any" && x.type !== type) return false;
+        if (openOnly && !x.openHouse) return false;
+
+        if (query){
+          const blob = (x.address + " " + x.city + " " + x.type + " " + statusLabel(x.status)).toLowerCase();
+          // allow multi-token search
+          for (const token of query.split(/\s+/).filter(Boolean)){
+            if (!blob.includes(token)) return false;
+          }
+        }
+
+        return true;
+      });
+
+      // sorting
+      const sort = sortEl.value;
+      if (sort === "price_asc") items.sort((a,b)=>a.price-b.price);
+      else if (sort === "price_desc") items.sort((a,b)=>b.price-a.price);
+      else if (sort === "newest") items.sort((a,b)=>a.daysOn-b.daysOn); // smaller daysOn = newer
+      else {
+        // relevance
+        items.sort((a,b)=>relevanceScore(b, query)-relevanceScore(a, query));
+      }
+
+      return items;
+    }
+
+    // --- Rendering ---
+    function render(){
+      const items = getFiltered();
+
+      // meta
+      const q = qEl.value.trim();
+      resultsMetaEl.textContent = `Showing ${items.length} result${items.length===1?"":"s"}${q ? ` for “${q}”` : ""}`;
+
+      // stats (only for sale homes, to keep it meaningful)
+      const salePrices = items.filter(x=>x.status==="for_sale").map(x=>x.price);
+      if (salePrices.length){
+        const avg = salePrices.reduce((s,n)=>s+n,0)/salePrices.length;
+        avgPriceEl.textContent = `Avg: ${fmtMoney(avg, "for_sale")}`;
+        medianPriceEl.textContent = `Median: ${fmtMoney(median(salePrices), "for_sale")}`;
+      } else {
+        avgPriceEl.textContent = "Avg: —";
+        medianPriceEl.textContent = "Median: —";
+      }
+
+      // cards
+      cardsEl.innerHTML = "";
+      for (const x of items){
+        const card = document.createElement("div");
+        card.className = "card";
+        card.setAttribute("data-id", x.id);
+
+        const isSaved = saved.has(x.id);
+
+        card.innerHTML = `
+          <div class="img">
+            <div class="tag">
+              <span class="dot ${statusDotClass(x.status)}"></span>
+              ${statusLabel(x.status)}${x.openHouse ? " • Open house" : ""}
+            </div>
+            <button class="save" title="${isSaved ? "Unsave" : "Save"}" aria-label="save">
+              ${isSaved ? "♥" : "♡"}
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="price">${fmtMoney(x.price, x.status)}</div>
+            <div class="addr">${x.address}</div>
+            <div class="facts">
+              <span class="fact">${x.beds} bd</span>
+              <span class="fact">${x.baths} ba</span>
+              <span class="fact">${x.sqft.toLocaleString()} sqft</span>
+              <span class="fact">${x.type}</span>
+            </div>
+          </div>
+        `;
+
+        // clicking save should not open modal
+        const saveBtn = card.querySelector(".save");
+        saveBtn.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          toggleSave(x.id);
+          render();
+        });
+
+        card.addEventListener("click", ()=> openModal(x.id));
+        cardsEl.appendChild(card);
+      }
+
+      persistSaved();
+    }
+
+    function toggleSave(id){
+      if (saved.has(id)) saved.delete(id);
+      else saved.add(id);
+      persistSaved();
+    }
+
+    // --- Modal logic ---
+    function openModal(id){
+      activeListingId = id;
+      const x = listings.find(z=>z.id===id);
+      if (!x) return;
+
+      modalTitleEl.textContent = `${statusLabel(x.status)} • ${x.type.toUpperCase()} • ${x.id}`;
+      modalPriceEl.textContent = fmtMoney(x.price, x.status);
+      modalAddrEl.textContent = x.address;
+
+      modalFactsEl.innerHTML = `
+        <span class="fact">${x.beds} bd</span>
+        <span class="fact">${x.baths} ba</span>
+        <span class="fact">${x.sqft.toLocaleString()} sqft</span>
+        <span class="fact">Built ${x.year}</span>
+        <span class="fact">${x.openHouse ? "Open house" : "No open house"}</span>
+      `;
+
+      modalDescEl.textContent = x.description;
+
+      modalStatsEl.innerHTML = `
+        <div class="badge"><span>Status</span><strong>${statusLabel(x.status)}</strong></div>
+        <div class="badge"><span>Days on market</span><strong>${x.daysOn ? x.daysOn + " days" : "—"}</strong></div>
+        <div class="badge"><span>City</span><strong>${x.city}</strong></div>
+        <div class="badge"><span>Type</span><strong>${x.type}</strong></div>
+      `;
+
+      modalSaveBtn.textContent = saved.has(id) ? "♥ Saved" : "♡ Save";
+      backdropEl.classList.add("show");
+      backdropEl.setAttribute("aria-hidden", "false");
+    }
+
+    function closeModal(){
+      backdropEl.classList.remove("show");
+      backdropEl.setAttribute("aria-hidden", "true");
+      activeListingId = null;
+    }
+
+    // --- Events ---
+    // Segmented status buttons
+    document.querySelectorAll(".seg button").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        document.querySelectorAll(".seg button").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        statusFilter = btn.dataset.status;
+        render();
+      });
+    });
+
+    // Re-render on filter changes
+    [qEl, minPriceEl, maxPriceEl, bedsEl, bathsEl, typeEl, openHouseEl, hideSoldEl, favoritesOnlyEl, sortEl].forEach(node=>{
+      node.addEventListener("input", render);
+      node.addEventListener("change", render);
+    });
+
+    resetBtn.addEventListener("click", ()=>{
+      qEl.value = "";
+      minPriceEl.value = "0";
+      maxPriceEl.value = "999999999";
+      bedsEl.value = "0";
+      bathsEl.value = "0";
+      typeEl.value = "any";
+      openHouseEl.checked = false;
+      hideSoldEl.checked = true;
+      favoritesOnlyEl.checked = false;
+      sortEl.value = "relevance";
+
+      statusFilter = "all";
+      document.querySelectorAll(".seg button").forEach(b=>b.classList.remove("active"));
+      document.querySelector('.seg button[data-status="all"]').classList.add("active");
+
+      render();
+    });
+
+    newSearchBtn.addEventListener("click", ()=>{
+      render();
+      window.scrollTo({top: 0, behavior:"smooth"});
+    });
+
+    centerBtn.addEventListener("click", ()=>{
+      alert("Demo: Map centering would happen here (Mapbox/Google Maps).");
+    });
+
+    closeModalBtn.addEventListener("click", closeModal);
+    backdropEl.addEventListener("click", (e)=>{
+      if (e.target === backdropEl) closeModal();
+    });
+    window.addEventListener("keydown", (e)=>{
+      if (e.key === "Escape") closeModal();
+    });
+
+    modalSaveBtn.addEventListener("click", ()=>{
+      if (!activeListingId) return;
+      toggleSave(activeListingId);
+      modalSaveBtn.textContent = saved.has(activeListingId) ? "♥ Saved" : "♡ Save";
+      render();
+    });
+
+    scheduleBtn.addEventListener("click", ()=>{
+      alert("Demo: This would open a scheduling flow (calendar + contact info).");
+    });
+    messageBtn.addEventListener("click", ()=>{
+      alert("Demo: This would open a message form to the agent.");
+    });
+
+    // Initial render
+    persistSaved();
+    render();
+  </script>
 </body>
 </html>
