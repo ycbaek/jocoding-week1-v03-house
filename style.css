@@ -282,6 +282,46 @@ header{
   font-size:12px;
 }
 
+/* Contact Section */
+.contact-section{
+  padding:0 18px 18px 18px;
+}
+.contact-container{
+  max-width:600px;
+  margin:0 auto;
+  background: rgba(15,26,46,.72);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding:28px 24px;
+}
+.contact-container h2{
+  margin:0 0 4px 0;
+  font-size:18px;
+  color:#d9e5ff;
+}
+.contact-sub{
+  margin:0 0 18px 0;
+  color:var(--muted);
+  font-size:13px;
+}
+.contact-form{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.contact-form textarea{
+  padding:11px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(8,16,31,.65);
+  color:var(--text);
+  outline:none;
+  font-family:inherit;
+  font-size:14px;
+  resize:vertical;
+}
+
 /* Modal */
 .backdrop{
   position:fixed; inset:0;
