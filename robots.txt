@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jocoding-week1-v03-house.pages.dev/sitemap.xml
