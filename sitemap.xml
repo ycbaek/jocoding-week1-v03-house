@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://jocoding-week1-v03-house.pages.dev/</loc>
+    <loc>https://ycbaek.net/</loc>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://jocoding-week1-v03-house.pages.dev/about.html</loc>
+    <loc>https://ycbaek.net/about.html</loc>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://jocoding-week1-v03-house.pages.dev/guide.html</loc>
+    <loc>https://ycbaek.net/guide.html</loc>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://jocoding-week1-v03-house.pages.dev/market.html</loc>
+    <loc>https://ycbaek.net/market.html</loc>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://jocoding-week1-v03-house.pages.dev/contact.html</loc>
+    <loc>https://ycbaek.net/contact.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jocoding-week1-v03-house.pages.dev/privacy.html</loc>
+    <loc>https://ycbaek.net/privacy.html</loc>
     <priority>0.3</priority>
   </url>
 </urlset>
